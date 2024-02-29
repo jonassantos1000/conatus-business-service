@@ -8,11 +8,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -26,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig implements AuthenticationFailureHandler {
 	
@@ -47,7 +53,8 @@ public class SecurityConfig implements AuthenticationFailureHandler {
 	    http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 	    
 	    http.authorizeHttpRequests(request -> {
-	    	request.requestMatchers(HttpMethod.POST, "/auth/login/google2").permitAll();
+	    	request.requestMatchers(HttpMethod.POST, "/auth/login/token").permitAll();
+	    	request.requestMatchers(HttpMethod.POST, "/auth/register").permitAll();
 	    	request.anyRequest().authenticated();
 	    });
     	
@@ -96,6 +103,16 @@ public class SecurityConfig implements AuthenticationFailureHandler {
         return this;
     }
     
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+    
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 	
@@ -109,7 +126,7 @@ public class SecurityConfig implements AuthenticationFailureHandler {
 	        String uri = request.getRequestURI();
 	        
 	        // Determina se a requisição é feita através do bearer token
-	        return (auth != null) && (auth.startsWith("Bearer")) && (!uri.contains("oauth2")) && !uri.equals("23242");
+	        return (!uri.contains("oauth2")) && ((auth != null) && (auth.startsWith("Bearer")) || uri.contains("/register") || uri.contains("/login"));
 	    }
 	}
 	

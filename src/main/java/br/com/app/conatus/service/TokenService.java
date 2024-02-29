@@ -1,4 +1,4 @@
-package br.com.app.conatus.configuration;
+package br.com.app.conatus.service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public class TokenService {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(secretJwt);
 			String token = JWT.create()
-					.withIssuer("auth-api-tenant")
+					.withIssuer("conatus-bussines-api")
 					.withSubject(usuario.getUsername())
 					.withExpiresAt(generateExpirationDate())
 					.sign(algorithm);
@@ -38,7 +38,7 @@ public class TokenService {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(secretJwt);
 			return JWT.require(algorithm)
-					.withIssuer("auth-api-tenant")
+					.withIssuer("conatus-bussines-api")
 					.build()
 					.verify(token)
 					.getSubject();

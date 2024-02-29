@@ -69,7 +69,7 @@ public class UsuarioEntity implements UserDetails, Serializable {
 	@Column(name = "DT_ATUALIZACAO")
 	private ZonedDateTime dataAtualizacao;
 	
-	@OneToMany(mappedBy = "idUsuarioGrupoUsuario.usuario")
+	@OneToMany(mappedBy = "idUsuarioGrupoUsuario.usuario", fetch = FetchType.LAZY)
 	private List<UsuarioGrupoUsuario> grupos;
 
 	@Override
@@ -79,7 +79,7 @@ public class UsuarioEntity implements UserDetails, Serializable {
 
 	@Override
 	public String getPassword() {
-		return this.getPassword();
+		return this.getSenha();
 	}
 
 	@Override
@@ -104,6 +104,7 @@ public class UsuarioEntity implements UserDetails, Serializable {
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+				
 		return this.getGrupos().stream()
 				.flatMap(grupo -> grupo.getIdUsuarioGrupoUsuario().getGrupoUsuario().getAutorizacoes().stream())
 				.map(autorizacao -> {

@@ -2,6 +2,7 @@ package br.com.app.conatus.configuration;
 
 import java.io.IOException;
 
+import org.hibernate.Hibernate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import com.nimbusds.oauth2.sdk.util.StringUtils;
 
 import br.com.app.conatus.enums.CodigoDominio;
 import br.com.app.conatus.repositories.UsuarioRepository;
+import br.com.app.conatus.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,15 +31,15 @@ public class SecurityFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		String token = this.recoverToken(request);
-		
+				
 		if(token != null) {
 			
 			String subject = tokenService.validateToken(token);
 			
 			UserDetails user = usuarioRepository.findByUsername(subject, CodigoDominio.STATUS_ATIVO.name());
-			
+						
 			var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-			//var authentication = new UsernamePasswordAuthenticationToken(null, null, List.of());
+			
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
 		

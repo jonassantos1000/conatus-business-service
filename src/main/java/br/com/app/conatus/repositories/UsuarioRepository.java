@@ -10,9 +10,12 @@ import br.com.app.conatus.entities.UsuarioEntity;
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>{
 
 	@Query(" SELECT usuario FROM UsuarioEntity usuario "
-			+ " JOIN FETCH usuario.pessoa pessoa "
-			+ " WHERE pessoa.email = :email "
-			+ " AND usuario.situacao.codigo = :codSituacao")
+			+ " JOIN FETCH usuario.pessoa pessoaFisica "
+			+ " LEFT JOIN FETCH usuario.grupos grupos "
+			+ " WHERE pessoaFisica.email = :email "
+			+ " AND usuario.situacao.codigo = :codSituacao ")
 	UsuarioEntity findByUsername(String email, String codSituacao);
+	
+	boolean existsByPessoaEmail(String email);
 
 }
