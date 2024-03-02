@@ -36,7 +36,7 @@ public class AutorizacaoGrupoUsuarioEntity implements Serializable{
 	@JoinColumn(name = "ID_GRUPO_USUARIO")
 	private GrupoUsuarioEntity grupoUsuario;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "ID_PERMISSAO")
 	private PermissaoEntity permissao;
 	

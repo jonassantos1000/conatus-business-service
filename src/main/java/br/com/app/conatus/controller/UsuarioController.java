@@ -50,8 +50,6 @@ public class UsuarioController {
 	@PostMapping("/login/token")
 	public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid AuthenticationRequest authRequest) {
 		
-		System.out.println("chamei");
-		
 		UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(
 				authRequest.username(), authRequest.password());
 		
@@ -70,7 +68,7 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/teste")
-	@PreAuthorize("hasAuthority('X1232')")
+	@PreAuthorize("hasAuthority('X123')")
 	public ResponseEntity<Void> register(){
 
 		return ResponseEntity.ok().build();

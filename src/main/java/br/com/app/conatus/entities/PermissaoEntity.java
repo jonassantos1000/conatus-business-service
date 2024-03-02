@@ -1,15 +1,18 @@
 package br.com.app.conatus.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 import br.com.app.conatus.enums.TipoPermissaoEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,4 +42,7 @@ public class PermissaoEntity implements Serializable{
 	@Column(name = "SG_TIPO", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private TipoPermissaoEnum tipoPermissao;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "permissao")
+	private List<AutorizacaoGrupoUsuarioEntity> gruposUsuarios;
 }

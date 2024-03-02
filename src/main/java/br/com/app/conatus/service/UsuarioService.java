@@ -19,6 +19,6 @@ public class UsuarioService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		return usuarioRepository.findByUsername(username, CodigoDominio.STATUS_ATIVO.name());
-	}
+	} 
 
 }

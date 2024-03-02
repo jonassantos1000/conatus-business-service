@@ -1,17 +1,23 @@
 package br.com.app.conatus.configuration;
 
 import java.io.IOException;
+import java.time.Instant;
 
-import org.hibernate.Hibernate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 
 import br.com.app.conatus.enums.CodigoDominio;
+import br.com.app.conatus.exceptions.DetalheErroResponse;
+import br.com.app.conatus.exceptions.ErroResponse;
+import br.com.app.conatus.exceptions.MsgException;
 import br.com.app.conatus.repositories.UsuarioRepository;
 import br.com.app.conatus.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -28,22 +34,31 @@ public class SecurityFilter extends OncePerRequestFilter {
 	
 	private final UsuarioRepository usuarioRepository;
 
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-		String token = this.recoverToken(request);
-				
-		if(token != null) {
-			
-			String subject = tokenService.validateToken(token);
-			
-			UserDetails user = usuarioRepository.findByUsername(subject, CodigoDominio.STATUS_ATIVO.name());
-						
-			var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-			
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		}
 		
-		filterChain.doFilter(request, response);
+		try {
+		
+			String token = this.recoverToken(request);
+					
+			if(token != null) {
+				
+				String subject = tokenService.validateToken(token);
+				
+				UserDetails user = usuarioRepository.findByUsername(subject, CodigoDominio.STATUS_ATIVO.name());
+							
+				var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+				
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
+			
+			filterChain.doFilter(request, response);
+		} catch (MsgException e) {
+            setErrorResponse(HttpStatus.BAD_REQUEST, request, response, e);
+        } catch (RuntimeException e) {
+            setErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, request, response, e);
+        }
 
 	}
 	
@@ -56,5 +71,23 @@ public class SecurityFilter extends OncePerRequestFilter {
 		
 		return authHeader.replace("Bearer ", "");
 	}
+	
+    private void setErrorResponse(HttpStatus status, HttpServletRequest request, HttpServletResponse response, Throwable ex){
+        
+    	response.setStatus(status.value());
+        
+        response.setContentType("application/json");
+        
+        ErroResponse apiError = new ErroResponse(Instant.now(), new DetalheErroResponse("Erro na requisição", ex.getMessage()), request.getRequestURI());
+        
+        ObjectMapper objectMapper= JsonMapper.builder().findAndAddModules().build();
+        
+        try {
+            objectMapper.writeValue(response.getWriter(), apiError);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+      
 
 }

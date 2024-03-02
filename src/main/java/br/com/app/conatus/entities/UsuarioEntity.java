@@ -69,7 +69,7 @@ public class UsuarioEntity implements UserDetails, Serializable {
 	@Column(name = "DT_ATUALIZACAO")
 	private ZonedDateTime dataAtualizacao;
 	
-	@OneToMany(mappedBy = "idUsuarioGrupoUsuario.usuario", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
 	private List<UsuarioGrupoUsuario> grupos;
 
 	@Override
@@ -104,12 +104,13 @@ public class UsuarioEntity implements UserDetails, Serializable {
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-				
+		
 		return this.getGrupos().stream()
-				.flatMap(grupo -> grupo.getIdUsuarioGrupoUsuario().getGrupoUsuario().getAutorizacoes().stream())
+				.flatMap(grupo -> grupo.getGrupoUsuario().getAutorizacoes().stream())
 				.map(autorizacao -> {
 					return new SimpleGrantedAuthority(autorizacao.getPermissao().getCodigoPermissao());
-				}).toList();
+				})
+				.toList(); 
 	}
 
 }

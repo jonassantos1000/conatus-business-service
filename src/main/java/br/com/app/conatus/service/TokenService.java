@@ -13,6 +13,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import br.com.app.conatus.entities.UsuarioEntity;
+import br.com.app.conatus.exceptions.MsgException;
 
 @Service
 public class TokenService {
@@ -43,7 +44,7 @@ public class TokenService {
 					.verify(token)
 					.getSubject();
 		} catch (JWTVerificationException e) {
-			return "";
+			throw new MsgException("Token invalido.");
 		}
 	}
 	
