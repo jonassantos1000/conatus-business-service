@@ -1,5 +1,7 @@
 package br.com.app.conatus.configuration;
 
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
 
 @Configuration
 @EnableWebSecurity
@@ -67,20 +70,18 @@ public class SecurityConfig implements AuthenticationFailureHandler {
 	SecurityFilterChain bearerAuthFilterChain(HttpSecurity http) throws Exception {
 
 	    http.securityMatcher(new BearerRequestedMatcher());
-
-	    http.csrf(AbstractHttpConfigurer::disable);
-	    
-	    http.httpBasic(AbstractHttpConfigurer::disable);
-	    
+	        
 	    http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 	    
 	    http.authorizeHttpRequests(request -> {
 	    	request.requestMatchers(HttpMethod.POST, "/auth/login/token").permitAll();
 	    	request.requestMatchers(HttpMethod.POST, "/auth/register").permitAll();
+	    	request.requestMatchers(toH2Console()).permitAll();
 	    	request.anyRequest().authenticated();
 	    });
+	    
+        http.csrf((csrf) -> csrf.disable());
 
-    	
     	http.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 	    
 	    return http.build();
@@ -126,17 +127,14 @@ public class SecurityConfig implements AuthenticationFailureHandler {
 		
 	    http.securityMatcher(new WithoutAuthorizeRequestedMatcher());
 		
-	    http.csrf(AbstractHttpConfigurer::disable);
-	    
-	    http.httpBasic(AbstractHttpConfigurer::disable); 
-		
-	    http.formLogin(form -> form.disable());
-	    
 	    http.authorizeHttpRequests(auth -> {
+	    	auth.requestMatchers(toH2Console()).permitAll();
 	    	auth.anyRequest().denyAll();
 	    });
-
-	    return http.build();
+        
+	    http.headers(header -> header.frameOptions(frame -> frame.disable()));
+	            
+        return http.build();
     }
     
 	

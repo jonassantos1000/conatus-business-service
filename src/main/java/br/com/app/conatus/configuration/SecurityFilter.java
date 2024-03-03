@@ -14,12 +14,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 
-import br.com.app.conatus.enums.CodigoDominio;
 import br.com.app.conatus.exceptions.DetalheErroResponse;
 import br.com.app.conatus.exceptions.ErroResponse;
 import br.com.app.conatus.exceptions.MsgException;
-import br.com.app.conatus.repositories.UsuarioRepository;
+import br.com.app.conatus.exceptions.NaoEncontradoException;
 import br.com.app.conatus.service.TokenService;
+import br.com.app.conatus.service.UsuarioService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 	
 	private final TokenService tokenService;
 	
-	private final UsuarioRepository usuarioRepository;
+	private final UsuarioService usuarioService;
 
 
 	@Override
@@ -46,7 +46,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 				
 				String subject = tokenService.validateToken(token);
 				
-				UserDetails user = usuarioRepository.findByUsername(subject, CodigoDominio.STATUS_ATIVO.name());
+				UserDetails user = usuarioService.loadUserByUsernameWithAuthority(subject);
 							
 				var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 				
@@ -56,6 +56,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 		} catch (MsgException e) {
             setErrorResponse(HttpStatus.BAD_REQUEST, request, response, e);
+		} catch (NaoEncontradoException e) {
+            setErrorResponse(HttpStatus.NOT_FOUND, request, response, e);
         } catch (RuntimeException e) {
             setErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, request, response, e);
         }

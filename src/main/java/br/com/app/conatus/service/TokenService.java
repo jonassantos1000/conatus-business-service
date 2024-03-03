@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
@@ -12,7 +13,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
-import br.com.app.conatus.entities.UsuarioEntity;
 import br.com.app.conatus.exceptions.MsgException;
 
 @Service
@@ -21,7 +21,7 @@ public class TokenService {
 	@Value("${conatus.security.jwt.secret}")
 	private String secretJwt;
 
-	public String generateToken(UsuarioEntity usuario) {
+	public String generateToken(UserDetails usuario) {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(secretJwt);
 			String token = JWT.create()
@@ -31,7 +31,7 @@ public class TokenService {
 					.sign(algorithm);
 			return token;
 		} catch (JWTCreationException e) {
-			throw new RuntimeException("Error while generating token", e);
+			throw new RuntimeException("Não foi possível gerar o token", e);
 		}
 	}
 	

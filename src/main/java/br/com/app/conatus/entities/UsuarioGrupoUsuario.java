@@ -1,6 +1,7 @@
 package br.com.app.conatus.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

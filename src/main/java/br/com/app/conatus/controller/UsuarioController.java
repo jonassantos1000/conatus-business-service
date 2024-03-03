@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.app.conatus.entities.UsuarioEntity;
 import br.com.app.conatus.model.AuthenticationRequest;
 import br.com.app.conatus.model.AuthenticationResponse;
 import br.com.app.conatus.model.RegisterRequest;
+import br.com.app.conatus.model.UsuarioAutenticadoVO;
 import br.com.app.conatus.service.AutenticacaoService;
 import br.com.app.conatus.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +55,7 @@ public class UsuarioController {
 		
 		var auth = this.authenticationManager.authenticate(usernamePassword);
 		
-		var token = tokenService.generateToken((UsuarioEntity) auth.getPrincipal());
+		var token = tokenService.generateToken((UsuarioAutenticadoVO) auth.getPrincipal());
 		return ResponseEntity.ok(new AuthenticationResponse(token));
 	}
 	
@@ -68,7 +68,7 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/teste")
-	@PreAuthorize("hasAuthority('X123')")
+	@PreAuthorize("hasAuthority('X1234')")
 	public ResponseEntity<Void> register(){
 
 		return ResponseEntity.ok().build();

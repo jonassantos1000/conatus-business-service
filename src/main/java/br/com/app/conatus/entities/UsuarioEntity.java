@@ -2,16 +2,11 @@ package br.com.app.conatus.entities;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.app.conatus.enums.CodigoDominio;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -35,7 +30,7 @@ import lombok.Setter;
 @Table(name = "TB_USUARIO")
 @Builder @AllArgsConstructor @NoArgsConstructor
 @Setter @Getter @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class UsuarioEntity implements UserDetails, Serializable {
+public class UsuarioEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -71,46 +66,5 @@ public class UsuarioEntity implements UserDetails, Serializable {
 	
 	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
 	private List<UsuarioGrupoUsuario> grupos;
-
-	@Override
-	public boolean isEnabled() {
-		return CodigoDominio.STATUS_ATIVO.name().equals(this.getSituacao().getCodigo());
-	}
-
-	@Override
-	public String getPassword() {
-		return this.getSenha();
-	}
-
-	@Override
-	public String getUsername() {
-		return this.getPessoa().getEmail();
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return this.isEnabled();
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return this.isEnabled();
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return this.isEnabled();
-	}
-	
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		return this.getGrupos().stream()
-				.flatMap(grupo -> grupo.getGrupoUsuario().getAutorizacoes().stream())
-				.map(autorizacao -> {
-					return new SimpleGrantedAuthority(autorizacao.getPermissao().getCodigoPermissao());
-				})
-				.toList(); 
-	}
 
 }
