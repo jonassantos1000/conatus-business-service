@@ -149,7 +149,7 @@ public class SecurityConfig implements AuthenticationFailureHandler {
 	    }
 
 		private static boolean isBearerAuth(String auth, String uri) {
-			return (!uri.contains("oauth2")) && ((auth != null) && (auth.startsWith("Bearer")) || uri.contains("/register") || uri.contains("/login"));
+			return (!uri.contains("oauth2")) && ((auth != null) && (auth.startsWith("Bearer")) || uri.contains("/register") || uri.contains("/login/token"));
 		}
 	}
 	
@@ -166,7 +166,11 @@ public class SecurityConfig implements AuthenticationFailureHandler {
 	    
 		private static boolean isOauth2Auth(String auth, String uri) {
 			return (uri != null)
-	        		&& (uri.contains("/login/oauth2/code/google") || uri.contains("/oauth2/authorization/google") || uri.contains("/auth/login/google") || uri.contains("/oauth2/login/google"))
+	        		&& (uri.contains("/login/oauth2/code/google") || 
+	        				uri.contains("/oauth2/authorization/google") || 
+	        				uri.contains("/auth/login/google") || 
+	        				uri.contains("/oauth2/login/google") ||
+	        				uri.contains("/logout"))
 	        		&& StringUtils.isBlank(auth);
 		}
 	}
