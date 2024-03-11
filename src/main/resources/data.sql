@@ -225,7 +225,7 @@ CREATE TABLE TB_VINCULO_FUNCIONARIO (
 CREATE TABLE tb_grupo_usuario (
     IDENT BIGINT NOT NULL,
     id_dom_situacao BIGINT,
-    desc_grupo VARCHAR(11),
+    desc_grupo VARCHAR(100),
     PRIMARY KEY (IDENT) 
 );
 
@@ -233,7 +233,6 @@ CREATE TABLE TB_USUARIO_GRUPO_USUARIO (
     ID_GRUPO_USUARIO BIGINT NOT NULL,
     ID_USUARIO BIGINT NOT NULL,
     id_dom_situacao BIGINT,
-    desc_grupo VARCHAR(11),
     PRIMARY KEY (ID_GRUPO_USUARIO),
     CONSTRAINT FK_ID_grupo_usuario FOREIGN KEY (ID_GRUPO_USUARIO) REFERENCES tb_grupo_usuario(IDENT),
     CONSTRAINT FK_ID_PF_PESSOA1 FOREIGN KEY (ID_USUARIO) REFERENCES TB_PESSOA(IDENT)
@@ -483,11 +482,23 @@ INSERT INTO public.tb_modulo_sub_modulo
 VALUES(2, 3, 4, NULL, 1);
 
 insert into tb_grupo_usuario (IDENT, DESC_GRUPO, id_dom_situacao)
-values (1, 'Situacoes', 1);
+values (1, 'GRUPO - BASICO', 1);
 
 insert into TB_PERMISSAO (IDENT, permissao, codigo_permissao, SG_TIPO)
-values (1, 'TESTE', 'X123','FUNCIONALIDADE');
+values (1, 'VISUALIZAR PERFIL', 'B1','FUNCIONALIDADE');
+
+insert into TB_PERMISSAO (IDENT, permissao, codigo_permissao, SG_TIPO)
+values (2, 'ALTERAR PERFIL', 'B2','MENU');
+
+insert into TB_PERMISSAO (IDENT, permissao, codigo_permissao, SG_TIPO)
+values (3, 'ALTERAR SENHA', 'B3','FUNCIONALIDADE');
 
 insert into TB_AUTORIZACAO_GRUPO_USUARIO (IDENT, ID_GRUPO_USUARIO, ID_PERMISSAO, ID_DOM_SITUACAO)
 values (1, 1, 1, 1);
+
+insert into TB_AUTORIZACAO_GRUPO_USUARIO (IDENT, ID_GRUPO_USUARIO, ID_PERMISSAO, ID_DOM_SITUACAO)
+values (2, 1, 2, 1);
+
+insert into TB_AUTORIZACAO_GRUPO_USUARIO (IDENT, ID_GRUPO_USUARIO, ID_PERMISSAO, ID_DOM_SITUACAO)
+values (3, 1, 3, 1);
 

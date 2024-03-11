@@ -28,8 +28,8 @@ public class UsuarioService implements UserDetailsService {
 		
 		return UsuarioAutenticadoVO.builder()
 				.idUsuario(usuario.getId())
-				.username(username)
-				.password(usuario.getSenha())
+				.email(username)
+				.senha(usuario.getSenha())
 				.situacao(usuario.getSituacao().getCodigo())
 				.codigoAutorizacoes(List.of())
 				.build();

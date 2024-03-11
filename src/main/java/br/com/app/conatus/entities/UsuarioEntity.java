@@ -65,6 +65,6 @@ public class UsuarioEntity implements Serializable {
 	private ZonedDateTime dataAtualizacao;
 	
 	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
-	private List<UsuarioGrupoUsuario> grupos;
+	private List<UsuarioGrupoUsuarioEntity> grupos;
 
 }

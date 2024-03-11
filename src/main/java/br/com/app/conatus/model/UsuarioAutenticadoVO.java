@@ -22,8 +22,8 @@ public class UsuarioAutenticadoVO implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	
 	private Long idUsuario;
-	private String username;
-	private String password;
+	private String email;
+	private String senha;
 	private String situacao;
 	private List<String> codigoAutorizacoes;
 
@@ -34,12 +34,12 @@ public class UsuarioAutenticadoVO implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return this.password;
+		return this.senha;
 	}
 
 	@Override
 	public String getUsername() {
-		return this.username;
+		return this.email;
 	}
 	
 	@Override

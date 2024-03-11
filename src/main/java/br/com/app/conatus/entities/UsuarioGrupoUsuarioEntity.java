@@ -1,7 +1,6 @@
 package br.com.app.conatus.entities;
 
 import java.io.Serializable;
-import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +21,7 @@ import lombok.Setter;
 @Builder @AllArgsConstructor @NoArgsConstructor
 @Setter @Getter @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @IdClass(UsuarioGrupoUsuarioId.class)
-public class UsuarioGrupoUsuario implements Serializable {
+public class UsuarioGrupoUsuarioEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

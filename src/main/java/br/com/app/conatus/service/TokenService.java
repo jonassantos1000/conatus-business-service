@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
@@ -21,12 +20,12 @@ public class TokenService {
 	@Value("${conatus.security.jwt.secret}")
 	private String secretJwt;
 
-	public String generateToken(UserDetails usuario) {
+	public String generateToken(String email) {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(secretJwt);
 			String token = JWT.create()
 					.withIssuer("conatus-bussines-api")
-					.withSubject(usuario.getUsername())
+					.withSubject(email)
 					.withExpiresAt(generateExpirationDate())
 					.sign(algorithm);
 			return token;
