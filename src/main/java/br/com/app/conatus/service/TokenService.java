@@ -13,6 +13,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import br.com.app.conatus.exceptions.MsgException;
+import br.com.app.conatus.util.TokenUtil;
 
 @Service
 public class TokenService {
@@ -40,7 +41,7 @@ public class TokenService {
 			return JWT.require(algorithm)
 					.withIssuer("conatus-bussines-api")
 					.build()
-					.verify(token)
+					.verify(TokenUtil.replaceBearer(token))
 					.getSubject();
 		} catch (JWTVerificationException e) {
 			throw new MsgException("Token invalido.");

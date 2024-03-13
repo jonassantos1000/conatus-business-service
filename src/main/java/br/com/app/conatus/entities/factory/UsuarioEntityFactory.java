@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UsuarioEntityFactory {
 
-	public static UsuarioEntity converterParaEntity(CadastroUsuarioVO dados, PessoaFisicaEntity pessoa, DominioEntity situacao, String senha) {
+	public static UsuarioEntity converterParaEntity(CadastroUsuarioVO dados, PessoaFisicaEntity pessoa, DominioEntity situacao) {
 		
 		return UsuarioEntity.builder()
 				.pessoa(pessoa)
-				.senha(senha)
+				.senha(dados.getSenha())
 				.situacao(situacao)
+				.idGoogle(dados.getIdGoogle())
 				.build();
 	}
 }

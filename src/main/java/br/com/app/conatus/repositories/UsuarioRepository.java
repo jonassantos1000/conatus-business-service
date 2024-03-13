@@ -28,5 +28,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>{
 	List<String> findAutorizacoesByUsuarioId(@Param("idUsuario") Long idUsuario);
 		
 	boolean existsByPessoaEmail(String email); 
+	
+	boolean existsByIdGoogle(String idGoogle);
 
 }

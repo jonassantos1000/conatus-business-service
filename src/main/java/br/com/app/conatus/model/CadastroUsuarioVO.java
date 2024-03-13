@@ -23,5 +23,7 @@ public class CadastroUsuarioVO implements Serializable{
 	
 	@NotBlank(message = "O telefone é obrigatório.")
 	private String telefone;
+	
+	private String idGoogle;
 
 }

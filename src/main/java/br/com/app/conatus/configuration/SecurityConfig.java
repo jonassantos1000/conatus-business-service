@@ -169,7 +169,6 @@ public class SecurityConfig implements AuthenticationFailureHandler {
 	        		&& (uri.contains("/login/oauth2/code/google") || 
 	        				uri.contains("/oauth2/authorization/google") || 
 	        				uri.contains("/auth/login/google") || 
-	        				uri.contains("/oauth2/login/google") ||
 	        				uri.contains("/logout"))
 	        		&& StringUtils.isBlank(auth);
 		}

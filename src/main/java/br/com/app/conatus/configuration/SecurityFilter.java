@@ -12,7 +12,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.nimbusds.oauth2.sdk.util.StringUtils;
 
 import br.com.app.conatus.exceptions.DetalheErroResponse;
 import br.com.app.conatus.exceptions.ErroResponse;
@@ -20,6 +19,7 @@ import br.com.app.conatus.exceptions.MsgException;
 import br.com.app.conatus.exceptions.NaoEncontradoException;
 import br.com.app.conatus.service.TokenService;
 import br.com.app.conatus.service.UsuarioService;
+import br.com.app.conatus.util.TokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -65,13 +65,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 	}
 	
 	private String recoverToken(HttpServletRequest request) {
-		String authHeader = request.getHeader("Authorization");
 		
-		if(StringUtils.isBlank(authHeader)) {
-			return authHeader;
-		}
-		
-		return authHeader.replace("Bearer ", "");
+		return TokenUtil.replaceBearer(request.getHeader("Authorization"));
 	}
 	
     private void setErrorResponse(HttpStatus status, HttpServletRequest request, HttpServletResponse response, Throwable ex){

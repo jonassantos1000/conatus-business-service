@@ -45,6 +45,9 @@ public class UsuarioEntity implements Serializable {
 	@Column(name = "DS_TOKEN")
 	private String token;
 	
+	@Column(name = "ID_GOOGLE")
+	private String idGoogle;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_PESSOA")
 	private PessoaFisicaEntity pessoa;
